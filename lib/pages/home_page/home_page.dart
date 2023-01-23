@@ -12,7 +12,7 @@ class _HomePageState extends State<HomePage> {
   final HomePageController controller = HomePageController();
   @override
   void initState() {
-    if (controller.accessToken != null) {
+    if (!controller.isExpired) {
       Navigator.of(context).pushNamed('/auth');
     }
     super.initState();
@@ -44,9 +44,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                controller.auth();
-                if (controller.accessToken != null) {
+              onPressed: () async {
+                await controller.auth();
+
+                if (!controller.isExpired) {
+                  if (!mounted) return;
                   Navigator.of(context).pushNamed('/auth');
                 }
               },
